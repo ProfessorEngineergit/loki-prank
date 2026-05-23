@@ -82,7 +82,7 @@ einen laufenden Modus jederzeit und setzt alles zurück.
 - **Panik ⌃⌥⌘P** + reversible, nicht-destruktive Streiche; kein Daten-/Passwort-Abgriff.
 - Der **Companion** ist eine lokale Skript-Engine (mit Einsteckpunkt für ein späteres lokales LLM) und bleibt im Einwilligungs-/Reveal-Modell — kein verdecktes Manipulieren.
 
-## Streich-Katalog (31 Streiche)
+## Streich-Katalog (32 Streiche)
 
 Jeder Streich hat eigene Einstellungen (per Schieberegler/Auswahl/Textfeld im
 Overlay) und ist reversibel oder ein harmloser Einmal-Effekt.
@@ -105,7 +105,9 @@ Overlay) und ist reversibel oder ein harmloser Einmal-Effekt.
 - **Maus-Drift** · **Scroll-Richtung umkehren** · **Tastaturbelegung tauschen** · **Tasten-Wiederholung** · **Maus-Geschwindigkeit**
 
 **Fake-System**
-- **Fake-Benachrichtigungen** · **Fake-Systemdialog** · **Hacker-Terminal** · **Geister-Notiz** · **Geist im System (Companion)** · **Auflösung**
+- **Fake-Benachrichtigungen** · **Fake-Systemdialog** · **Hacker-Terminal** · **Geister-Notiz** · **Geist im System (Companion)** · **Der Beobachter (Vision)** · **Auflösung**
+
+> **Der Beobachter** reagiert live auf Aktivität („Beweg dich nicht weg", „Ich lese, was du tippst"). Alles ist **on-device & leichtgewichtig**: Maus-/App-/Tipp-Signale, optional lokale Apple-**Vision-OCR** (standardmäßig aus). **Nichts wird übertragen oder gespeichert**, die Tipp-Erkennung merkt nur *dass* getippt wird, **nie welche Taste** (kein Keylogger). Gedacht fürs höchste Tier (Modus „Die Heimsuchung").
 
 ¹ „Bildschirm umdrehen" benötigt [`displayplacer`](https://github.com/jakehilborn/displayplacer): `brew install displayplacer`.
 

@@ -145,13 +145,14 @@ public extension LokiFactory {
                 tier: 3,
                 steps: [
                     ModeStep(at: 0, "companion"),
-                    ModeStep(at: 30, "fakeNotifications"),
-                    ModeStep(at: 55, "randomSounds"),
-                    ModeStep(at: 80, "cursorJump"),
-                    ModeStep(at: 100, "appearanceToggle"),
-                    ModeStep(at: 130, "rickroll"),
-                    ModeStep(at: 160, "fakeDialog"),
-                    ModeStep(at: 185, "reveal"),
+                    ModeStep(at: 25, "watcher"),
+                    ModeStep(at: 50, "fakeNotifications"),
+                    ModeStep(at: 75, "randomSounds"),
+                    ModeStep(at: 95, "cursorJump"),
+                    ModeStep(at: 115, "appearanceToggle"),
+                    ModeStep(at: 140, "rickroll"),
+                    ModeStep(at: 170, "fakeDialog"),
+                    ModeStep(at: 195, "reveal"),
                 ]
             ),
         ]

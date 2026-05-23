@@ -40,7 +40,7 @@ final class CatalogTests: XCTestCase {
     }
 
     func testCatalogSize() {
-        XCTAssertEqual(LokiFactory.allPranks().count, 31)
+        XCTAssertEqual(LokiFactory.allPranks().count, 32)
     }
 
     func testModesReferenceValidPranks() {

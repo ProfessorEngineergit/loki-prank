@@ -48,6 +48,7 @@ public enum LokiFactory {
             HackerTerminalPrank(),
             GhostNotePrank(),
             CompanionPrank(),
+            WatcherPrank(),
             RevealPrank(),
         ]
     }
