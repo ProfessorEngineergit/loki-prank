@@ -40,7 +40,7 @@ final class CatalogTests: XCTestCase {
     }
 
     func testCatalogSize() {
-        XCTAssertEqual(LokiFactory.allPranks().count, 29)
+        XCTAssertEqual(LokiFactory.allPranks().count, 30)
     }
 
     func testEverySettingHasUniqueKeyWithinPrank() {
@@ -125,6 +125,29 @@ final class PrankEngineTests: XCTestCase {
         XCTAssertEqual(a.undoCount, 1)
         XCTAssertEqual(b.undoCount, 1)
         XCTAssertTrue(engine.activePranks.isEmpty)
+    }
+
+    func testAutoRevealFiresAfterRunningAPrank() {
+        let engine = makeEngine()
+        engine.register(FakePrank(id: "a"))
+        engine.autoRevealMinutes = 0.01 // 0.6s
+
+        let expectation = XCTestExpectation(description: "auto-reveal fires")
+        engine.onAutoReveal = { expectation.fulfill() }
+        try? engine.run(id: "a")
+        XCTAssertTrue(engine.autoRevealArmed)
+
+        wait(for: [expectation], timeout: 3)
+    }
+
+    func testAutoRevealCancelledByPanic() {
+        let engine = makeEngine()
+        engine.register(FakePrank(id: "a"))
+        engine.autoRevealMinutes = 5
+        try? engine.run(id: "a")
+        XCTAssertTrue(engine.autoRevealArmed)
+        _ = engine.panic()
+        XCTAssertFalse(engine.autoRevealArmed)
     }
 
     func testRegisterIsIdempotentOnID() {

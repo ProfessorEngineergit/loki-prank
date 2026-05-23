@@ -14,14 +14,39 @@ final class AppState: ObservableObject {
     /// Bumped whenever active pranks change, to force list refresh.
     @Published private(set) var activeTick: Int = 0
 
+    /// Minutes after starting a prank until Loki auto-reveals and restores
+    /// everything. 0 = off. Persisted.
+    @Published var autoRevealMinutes: Double {
+        didSet {
+            UserDefaults.standard.set(autoRevealMinutes, forKey: Self.autoRevealKey)
+            engine.autoRevealMinutes = autoRevealMinutes
+        }
+    }
+    private static let autoRevealKey = "loki.autoRevealMinutes"
+
     init() {
         let config = ConfigStore()
         self.config = config
         self.engine = LokiFactory.makeEngine(config: config)
         self.hasConsented = consentStore.hasConsented
+        let saved = UserDefaults.standard.object(forKey: Self.autoRevealKey) as? Double ?? 0
+        self.autoRevealMinutes = saved
+        engine.autoRevealMinutes = saved
         engine.onActiveChanged = { [weak self] in
             self?.activeTick += 1
         }
+        engine.onAutoReveal = { [weak self] in
+            self?.performAutoReveal()
+        }
+    }
+
+    /// Fired by the engine's auto-reveal timer: disclose, then restore everything.
+    private func performAutoReveal() {
+        try? engine.run(id: "reveal")
+        let errors = engine.panic()
+        lastStatus = errors.isEmpty
+            ? "🎭 Auto-Auflösung: alles zurückgesetzt"
+            : "Auto-Auflösung mit \(errors.count) Fehler(n)"
     }
 
     var pranks: [PrankModule] { engine.all }

@@ -13,6 +13,17 @@ public final class PrankEngine {
     /// UI can refresh. Set by the app layer.
     public var onActiveChanged: (() -> Void)?
 
+    /// Safety auto-reveal: minutes after a prank is started, the operator wants
+    /// the bit to resolve itself. 0 = off. Each new prank start re-arms the
+    /// countdown. When it fires, `onAutoReveal` is called on the main thread
+    /// (the app shows the reveal and restores everything).
+    public var autoRevealMinutes: Double = 0 {
+        didSet { if autoRevealMinutes <= 0 { cancelAutoReveal() } }
+    }
+    public var onAutoReveal: (() -> Void)?
+    private var revealTimer: DispatchSourceTimer?
+    private let revealQueue = DispatchQueue(label: "loki.autoreveal")
+
     public init(context: PrankContext) {
         self.context = context
     }
@@ -55,12 +66,18 @@ public final class PrankEngine {
             queue.sync { _ = activeIDs.insert(id) }
             notify()
         }
+        // Don't let the reveal re-arm itself into a loop.
+        if id != "reveal" { armAutoReveal() }
     }
 
     public func undo(id: String) throws {
         guard let prank = prank(id: id) else { return }
         try prank.undo(context: context)
-        queue.sync { _ = activeIDs.remove(id) }
+        let stillActive = queue.sync { () -> Bool in
+            activeIDs.remove(id)
+            return !activeIDs.isEmpty
+        }
+        if !stillActive { cancelAutoReveal() }
         notify()
     }
 
@@ -87,8 +104,40 @@ public final class PrankEngine {
             }
         }
         queue.sync { activeIDs.removeAll() }
+        cancelAutoReveal()
         notify()
         return errors
+    }
+
+    // MARK: Auto-reveal timer
+
+    private func armAutoReveal() {
+        guard autoRevealMinutes > 0 else { return }
+        let seconds = autoRevealMinutes * 60
+        revealQueue.sync {
+            revealTimer?.cancel()
+            let t = DispatchSource.makeTimerSource(queue: revealQueue)
+            t.schedule(deadline: .now() + seconds)
+            t.setEventHandler { [weak self] in
+                self?.revealQueue.async { self?.revealTimer = nil }
+                let cb = self?.onAutoReveal
+                DispatchQueue.main.async { cb?() }
+            }
+            t.resume()
+            revealTimer = t
+        }
+    }
+
+    private func cancelAutoReveal() {
+        revealQueue.sync {
+            revealTimer?.cancel()
+            revealTimer = nil
+        }
+    }
+
+    /// Seconds remaining until the auto-reveal fires, or nil if not armed.
+    public var autoRevealArmed: Bool {
+        revealQueue.sync { revealTimer != nil }
     }
 
     private func notify() {

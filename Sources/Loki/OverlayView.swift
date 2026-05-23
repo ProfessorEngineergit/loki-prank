@@ -29,6 +29,7 @@ struct OverlayView: View {
         VStack(spacing: 0) {
             header
             searchField
+            autoRevealBar
             Divider()
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
@@ -58,6 +59,22 @@ struct OverlayView: View {
             }
         }
         .padding(.horizontal, 12).padding(.vertical, 8)
+    }
+
+    private var autoRevealBar: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "clock.arrow.circlepath").foregroundStyle(.secondary)
+            Stepper(value: $state.autoRevealMinutes, in: 0...120, step: 1) {
+                if state.autoRevealMinutes <= 0 {
+                    Text("Auto-Auflösung: aus").font(.caption)
+                } else {
+                    Text("Auto-Auflösung nach \(Int(state.autoRevealMinutes)) min")
+                        .font(.caption)
+                }
+            }
+            .help("Nach dem Start eines Streichs poppt automatisch „Das war Loki“ auf und alles wird zurückgesetzt. 0 = aus.")
+        }
+        .padding(.horizontal, 12).padding(.bottom, 6)
     }
 
     private var header: some View {
