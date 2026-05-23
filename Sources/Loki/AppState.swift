@@ -7,12 +7,17 @@ import LokiCore
 final class AppState: ObservableObject {
     let engine: PrankEngine
     let config: ConfigStore
+    let modeRunner: ModeRunner
+    let modes: [PrankMode]
     private let consentStore = ConsentStore()
+    private let runner = ScriptRunner()
 
     @Published var hasConsented: Bool
+    @Published var permissionsAcknowledged: Bool
     @Published var lastStatus: String = ""
     /// Bumped whenever active pranks change, to force list refresh.
     @Published private(set) var activeTick: Int = 0
+    @Published private(set) var activeModeID: String?
 
     /// Minutes after starting a prank until Loki auto-reveals and restores
     /// everything. 0 = off. Persisted.
@@ -27,8 +32,12 @@ final class AppState: ObservableObject {
     init() {
         let config = ConfigStore()
         self.config = config
-        self.engine = LokiFactory.makeEngine(config: config)
+        let engine = LokiFactory.makeEngine(config: config)
+        self.engine = engine
+        self.modeRunner = ModeRunner(engine: engine)
+        self.modes = LokiFactory.allModes()
         self.hasConsented = consentStore.hasConsented
+        self.permissionsAcknowledged = consentStore.permissionsAcknowledged
         let saved = UserDefaults.standard.object(forKey: Self.autoRevealKey) as? Double ?? 0
         self.autoRevealMinutes = saved
         engine.autoRevealMinutes = saved
@@ -38,7 +47,38 @@ final class AppState: ObservableObject {
         engine.onAutoReveal = { [weak self] in
             self?.performAutoReveal()
         }
+        modeRunner.onChange = { [weak self] in
+            self?.activeModeID = self?.modeRunner.activeModeID
+        }
     }
+
+    // MARK: Permissions
+
+    func acknowledgePermissions() {
+        consentStore.permissionsAcknowledged = true
+        permissionsAcknowledged = true
+    }
+
+    func requestAccessibility() { PermissionsManager.requestAccessibility() }
+    func requestScreenRecording() { PermissionsManager.requestScreenRecording() }
+    func requestAutomation() { PermissionsManager.requestAutomation(runner: runner) }
+    var hasAccessibility: Bool { PermissionsManager.isAccessibilityTrusted() }
+    var hasScreenRecording: Bool { PermissionsManager.hasScreenRecording() }
+
+    // MARK: Modes
+
+    func startMode(_ mode: PrankMode) {
+        guard hasConsented else { return }
+        modeRunner.start(mode)
+        lastStatus = "Modus „\(mode.name)“ läuft …"
+    }
+
+    func stopMode() {
+        modeRunner.stop()
+        lastStatus = "Modus gestoppt & zurückgesetzt"
+    }
+
+    func isModeActive(_ mode: PrankMode) -> Bool { activeModeID == mode.id }
 
     /// Fired by the engine's auto-reveal timer: disclose, then restore everything.
     private func performAutoReveal() {

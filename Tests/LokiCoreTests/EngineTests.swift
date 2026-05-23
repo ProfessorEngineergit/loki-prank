@@ -40,7 +40,26 @@ final class CatalogTests: XCTestCase {
     }
 
     func testCatalogSize() {
-        XCTAssertEqual(LokiFactory.allPranks().count, 30)
+        XCTAssertEqual(LokiFactory.allPranks().count, 31)
+    }
+
+    func testModesReferenceValidPranks() {
+        let ids = Set(LokiFactory.allPranks().map { $0.id })
+        for mode in LokiFactory.allModes() {
+            for step in mode.steps {
+                XCTAssertTrue(ids.contains(step.prankID),
+                              "Mode \(mode.id) referenziert unbekannten Prank \(step.prankID)")
+            }
+        }
+    }
+
+    func testModesCoverTiersAndEndWithReveal() {
+        let modes = LokiFactory.allModes()
+        XCTAssertEqual(Set(modes.map { $0.tier }), [1, 2, 3])
+        for mode in modes {
+            XCTAssertTrue(mode.steps.contains { $0.prankID == "reveal" },
+                          "Mode \(mode.id) endet nicht mit Auflösung")
+        }
     }
 
     func testEverySettingHasUniqueKeyWithinPrank() {

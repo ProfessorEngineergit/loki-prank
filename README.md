@@ -61,7 +61,28 @@ Beim ersten Auslösen fragt macOS nach Berechtigungen unter *Systemeinstellungen
 
 ---
 
-## Streich-Katalog (29 Streiche)
+## Modi (orchestrierte Abläufe)
+
+Im Tab **Modi** startest du kuratierte „Flows", die mehrere Streiche zeitlich
+gestaffelt zusammenspielen — und sich am Ende **immer selbst auflösen**:
+
+| Modus | Tier | Was passiert |
+|---|---|---|
+| Kleine Spielereien | 1 (Sanft) | Sounds → Sprachausgabe → Rickroll → Auflösung |
+| Irgendwas stimmt nicht | 2 (Unheimlich) | Fake-Mitteilungen, Geister-Sounds, Maus-Drift, Flackern, Rickroll → Auflösung |
+| Die Heimsuchung | 3 (Heimsuchung) | **Companion** meldet sich in Notes, dann eskaliert alles → Auflösung |
+
+Der `ModeRunner` erzwingt einen Reveal am Ende jedes Modus; **Panik** stoppt
+einen laufenden Modus jederzeit und setzt alles zurück.
+
+## Sicherheit by design
+
+- **Einwilligungs-Gate** beim ersten Start, danach **transparentes Rechte-Onboarding**.
+- **Auto-Auflösung**: optionaler Timer (in Minuten), nach dem Loki von selbst „Das war Loki" zeigt und alles zurücksetzt.
+- **Panik ⌃⌥⌘P** + reversible, nicht-destruktive Streiche; kein Daten-/Passwort-Abgriff.
+- Der **Companion** ist eine lokale Skript-Engine (mit Einsteckpunkt für ein späteres lokales LLM) und bleibt im Einwilligungs-/Reveal-Modell — kein verdecktes Manipulieren.
+
+## Streich-Katalog (31 Streiche)
 
 Jeder Streich hat eigene Einstellungen (per Schieberegler/Auswahl/Textfeld im
 Overlay) und ist reversibel oder ein harmloser Einmal-Effekt.
@@ -84,7 +105,7 @@ Overlay) und ist reversibel oder ein harmloser Einmal-Effekt.
 - **Maus-Drift** · **Scroll-Richtung umkehren** · **Tastaturbelegung tauschen** · **Tasten-Wiederholung** · **Maus-Geschwindigkeit**
 
 **Fake-System**
-- **Fake-Benachrichtigungen** · **Fake-Systemdialog** · **Hacker-Terminal** · **Geister-Notiz**
+- **Fake-Benachrichtigungen** · **Fake-Systemdialog** · **Hacker-Terminal** · **Geister-Notiz** · **Geist im System (Companion)** · **Auflösung**
 
 ¹ „Bildschirm umdrehen" benötigt [`displayplacer`](https://github.com/jakehilborn/displayplacer): `brew install displayplacer`.
 
@@ -126,8 +147,9 @@ Streiche auf — best-effort, ein Fehler blockiert die anderen nicht.
 ## Roadmap
 
 - **Phase 1:** Engine, Safety, Overlay, Starter-Streiche. ✅
-- **Phase 2:** Einstellungs-Framework + 29 Streiche mit Settings-UI & Suche. ✅
-- **Phase 3 (später):** Scheduler (Timer/Zufall/Events), Fake-Vollbild-Screens (eigenes Fenster) und opt-in Remote-Steuerung — transparent, für die bespaßte Person sicht- und abschaltbar.
+- **Phase 2:** Einstellungs-Framework + Streiche mit Settings-UI & Suche. ✅
+- **Phase 3:** Modi/Tiers + Companion, Auto-Auflösung, Rechte-Onboarding, neugestaltete UI. ✅
+- **Phase 4 (später):** Scheduler (Zufall/Events), Fake-Vollbild-Screens (eigenes Fenster), optionales lokales LLM für den Companion, opt-in Remote-Steuerung — transparent, für die bespaßte Person sicht- und abschaltbar.
 
 ---
 

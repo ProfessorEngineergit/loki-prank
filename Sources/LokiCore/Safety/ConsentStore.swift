@@ -15,4 +15,12 @@ public final class ConsentStore {
         get { defaults.bool(forKey: key) }
         set { defaults.set(newValue, forKey: key) }
     }
+
+    private let permKey = "loki.permissionsAcknowledged.v1"
+
+    /// Whether the user has been through the permissions onboarding once.
+    public var permissionsAcknowledged: Bool {
+        get { defaults.bool(forKey: permKey) }
+        set { defaults.set(newValue, forKey: permKey) }
+    }
 }

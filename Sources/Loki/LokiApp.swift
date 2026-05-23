@@ -38,8 +38,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             DispatchQueue.main.async { self?.toggleOverlay() }
         }
 
-        // On first launch, show the overlay so the consent gate is visible.
-        if !appState.hasConsented {
+        // On first launch, show the overlay so onboarding (consent + permissions)
+        // is visible without needing the hotkey.
+        if !appState.hasConsented || !appState.permissionsAcknowledged {
             showOverlay()
         }
     }

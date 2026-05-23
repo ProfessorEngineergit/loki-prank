@@ -19,9 +19,8 @@ struct PrankSettingsView: View {
                     .buttonStyle(.link)
             }
         }
-        .padding(.leading, 30)
-        .padding(.trailing, 6)
-        .padding(.vertical, 6)
+        .padding(.leading, 4)
+        .padding(.top, 2)
     }
 
     @ViewBuilder
