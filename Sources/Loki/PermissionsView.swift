@@ -33,8 +33,12 @@ struct PermissionsView: View {
                     granted: state.hasAccessibility) { state.requestAccessibility(); refresh += 1 }
 
                 row("rectangle.dashed.badge.record", "Bildschirmaufnahme",
-                    "Nur für „Bildschirm einfrieren“ (Screenshot als Hintergrund).",
+                    "Für „Bildschirm einfrieren“ und die lokale Bildschirm-Sicht des Beobachters.",
                     granted: state.hasScreenRecording) { state.requestScreenRecording(); refresh += 1 }
+
+                row("mic.fill", "Mikrofon & Spracherkennung",
+                    "Optional: damit du dem sprechenden Companion mündlich antworten kannst (on-device).",
+                    granted: state.hasVoice) { state.requestVoice(); refresh += 1 }
             }
             .padding(16)
             .id(refresh)

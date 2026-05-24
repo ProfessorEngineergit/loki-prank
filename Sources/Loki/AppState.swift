@@ -59,11 +59,21 @@ final class AppState: ObservableObject {
         permissionsAcknowledged = true
     }
 
-    func requestAccessibility() { PermissionsManager.requestAccessibility() }
-    func requestScreenRecording() { PermissionsManager.requestScreenRecording() }
+    func requestAccessibility() {
+        PermissionsManager.requestAccessibility()
+        // The system prompt only appears once ever; open the pane so a previous
+        // denial can still be toggled on.
+        PermissionsManager.openPrivacySettings(.accessibility)
+    }
+    func requestScreenRecording() {
+        PermissionsManager.requestScreenRecording()
+        PermissionsManager.openPrivacySettings(.screenRecording)
+    }
     func requestAutomation() { PermissionsManager.requestAutomation(runner: runner) }
+    func requestVoice() { PermissionsManager.requestVoiceReply { _ in } }
     var hasAccessibility: Bool { PermissionsManager.isAccessibilityTrusted() }
     var hasScreenRecording: Bool { PermissionsManager.hasScreenRecording() }
+    var hasVoice: Bool { PermissionsManager.hasMicrophone() && PermissionsManager.hasSpeechRecognition() }
 
     // MARK: Modes
 

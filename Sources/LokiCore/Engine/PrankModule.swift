@@ -34,6 +34,8 @@ public enum Permission: String, CaseIterable, Sendable {
     case automation = "Automatisierung (Apple Events)"
     case accessibility = "Bedienungshilfen"
     case screenRecording = "Bildschirmaufnahme"
+    case microphone = "Mikrofon"
+    case speechRecognition = "Spracherkennung"
 }
 
 /// A single prank. `run` performs the effect; `undo` reverses it.

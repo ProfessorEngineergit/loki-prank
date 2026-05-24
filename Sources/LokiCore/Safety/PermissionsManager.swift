@@ -1,6 +1,8 @@
 import Foundation
 import CoreGraphics
 import ApplicationServices
+import Speech
+import AVFoundation
 
 /// Requests and checks the macOS privacy permissions Loki's pranks need.
 /// Everything here is transparent: each request triggers the normal system
@@ -43,6 +45,22 @@ public enum PermissionsManager {
         let result = try? runner.appleScript(
             "tell application \"System Events\" to get name of first application process whose frontmost is true")
         return result != nil
+    }
+
+    // MARK: Microphone + Speech (the talking companion's voice replies)
+
+    public static func hasMicrophone() -> Bool {
+        AVCaptureDevice.authorizationStatus(for: .audio) == .authorized
+    }
+
+    public static func hasSpeechRecognition() -> Bool {
+        SFSpeechRecognizer.authorizationStatus() == .authorized
+    }
+
+    /// Requests both Speech Recognition and Microphone (the companion needs both
+    /// to hear and answer). Calls back with whether both were granted.
+    public static func requestVoiceReply(_ completion: @escaping (Bool) -> Void) {
+        VoiceListener.requestAuthorization(completion)
     }
 
     /// Opens a specific Privacy pane in System Settings.

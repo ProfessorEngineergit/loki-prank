@@ -56,8 +56,9 @@ Beim ersten Auslösen fragt macOS nach Berechtigungen unter *Systemeinstellungen
 | Berechtigung        | Wofür                                              |
 |---------------------|----------------------------------------------------|
 | Automatisierung     | Browser/Systemfunktionen via AppleScript steuern   |
-| Bedienungshilfen    | Maus-/Tastatursimulation (für einige Streiche)     |
-| Bildschirmaufnahme  | nur für den Wallpaper-Screenshot-Streich           |
+| Bedienungshilfen    | Maus-/Tastatursimulation, Tipp-/Aktivitätssignale  |
+| Bildschirmaufnahme  | Wallpaper-Screenshot & lokale Vision-Sicht         |
+| Mikrofon + Spracherkennung | optional: gesprochene Antworten an den Companion (on-device) |
 
 ---
 
@@ -70,7 +71,7 @@ gestaffelt zusammenspielen — und sich am Ende **immer selbst auflösen**:
 |---|---|---|
 | Kleine Spielereien | 1 (Sanft) | Sounds → Sprachausgabe → Rickroll → Auflösung |
 | Irgendwas stimmt nicht | 2 (Unheimlich) | Fake-Mitteilungen, Geister-Sounds, Maus-Drift, Flackern, Rickroll → Auflösung |
-| Die Heimsuchung | 3 (Heimsuchung) | **Companion** meldet sich in Notes, dann eskaliert alles → Auflösung |
+| Die Heimsuchung | 3 (Heimsuchung) | **Companion** spricht mit dir, **Beobachter** reagiert live, dann eskaliert alles → Auflösung |
 
 Der `ModeRunner` erzwingt einen Reveal am Ende jedes Modus; **Panik** stoppt
 einen laufenden Modus jederzeit und setzt alles zurück.
@@ -80,7 +81,7 @@ einen laufenden Modus jederzeit und setzt alles zurück.
 - **Einwilligungs-Gate** beim ersten Start, danach **transparentes Rechte-Onboarding**.
 - **Auto-Auflösung**: optionaler Timer (in Minuten), nach dem Loki von selbst „Das war Loki" zeigt und alles zurücksetzt.
 - **Panik ⌃⌥⌘P** + reversible, nicht-destruktive Streiche; kein Daten-/Passwort-Abgriff.
-- Der **Companion** ist eine lokale Skript-Engine (mit Einsteckpunkt für ein späteres lokales LLM) und bleibt im Einwilligungs-/Reveal-Modell — kein verdecktes Manipulieren.
+- Der **Companion** spricht (kein Notes) auf Basis einer lokalen Skript-Engine; optional über ein **lokales LLM (Ollama)** und mit **gesprochener Antwort** (on-device Spracherkennung) — alles lokal, nichts wird übertragen. Bleibt im Einwilligungs-/Reveal-Modell, kein verdecktes Manipulieren.
 
 ## Streich-Katalog (32 Streiche)
 
@@ -105,7 +106,7 @@ Overlay) und ist reversibel oder ein harmloser Einmal-Effekt.
 - **Maus-Drift** · **Scroll-Richtung umkehren** · **Tastaturbelegung tauschen** · **Tasten-Wiederholung** · **Maus-Geschwindigkeit**
 
 **Fake-System**
-- **Fake-Benachrichtigungen** · **Fake-Systemdialog** · **Hacker-Terminal** · **Geister-Notiz** · **Geist im System (Companion)** · **Der Beobachter (Vision)** · **Auflösung**
+- **Fake-Benachrichtigungen** · **Fake-Systemdialog** · **Hacker-Terminal** · **Geister-Notiz** · **Sprechender Companion (KI)** · **Der Beobachter (Vision)** · **Auflösung**
 
 > **Der Beobachter** reagiert live auf Aktivität („Beweg dich nicht weg", „Ich lese, was du tippst"). Alles ist **on-device & leichtgewichtig**: Maus-/App-/Tipp-Signale, optional lokale Apple-**Vision-OCR** (standardmäßig aus). **Nichts wird übertragen oder gespeichert**, die Tipp-Erkennung merkt nur *dass* getippt wird, **nie welche Taste** (kein Keylogger). Gedacht fürs höchste Tier (Modus „Die Heimsuchung").
 

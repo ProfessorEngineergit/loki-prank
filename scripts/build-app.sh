@@ -40,6 +40,10 @@ cat > "${APP_DIR}/Contents/Info.plist" <<PLIST
     <key>LSUIElement</key><true/>
     <key>NSAppleEventsUsageDescription</key>
     <string>Loki steuert Browser und Systemfunktionen für reversible Streiche.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Optional: damit du dem sprechenden Companion mündlich antworten kannst. Audio wird on-device verarbeitet.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Optional: erkennt deine gesprochenen Antworten lokal (on-device), damit der Companion reagieren kann.</string>
 </dict>
 </plist>
 PLIST
