@@ -25,10 +25,11 @@ public final class RevealPrank: PrankModule {
     public func run(context: PrankContext) throws {
         let message = context.config.string(id, "message",
             "🎭 Das war alles nur Loki!")
+        // Interrupt any ongoing haunt speech — the reveal cuts through everything.
+        if context.config.bool(id, "speak", true) {
+            SpeechCenter.shared.say("Überraschung! Das war nur Loki.", interrupt: true)
+        }
         _ = try? context.runner.appleScript(
             "display dialog \"\(message.appleScriptEscaped)\" with title \"Loki\" buttons {\"Haha 😄\"} default button 1 with icon note")
-        if context.config.bool(id, "speak", true) {
-            _ = try? context.runner.shell("/usr/bin/say", ["Überraschung! Das war nur Loki."])
-        }
     }
 }

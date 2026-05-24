@@ -82,6 +82,7 @@ public final class CompanionPrank: PrankModule {
     public func undo(context: PrankContext) throws {
         timer.stop()
         listener.stop()
+        SpeechCenter.shared.stopAll()
         history = []
     }
 
@@ -102,10 +103,7 @@ public final class CompanionPrank: PrankModule {
     private func speak(_ line: String, context: PrankContext) {
         history.append(line)
         if history.count > 40 { history.removeFirst(history.count - 40) }
-        var args: [String] = []
-        if !voice.isEmpty { args += ["-v", voice] }
-        args.append(line)
-        _ = try? context.runner.shell("/usr/bin/say", args)
+        SpeechCenter.shared.say(line, voice: voice)
     }
 }
 

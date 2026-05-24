@@ -102,29 +102,40 @@ public final class ScreenAwareness {
     /// Turn a snapshot into a creepy, context-aware line — or nil to stay quiet
     /// this tick (so it doesn't talk nonstop).
     public func reactiveLine(_ s: AwarenessSnapshot) -> String? {
-        if let word = s.words.randomElement(), Bool.random() {
-            return ["Klick nicht auf „\(word)“ … klick HIER.",
-                    "„\(word)“ … das hätte ich nicht angeklickt.",
-                    "Ich sehe „\(word)“ auf deinem Bildschirm."].randomElement()
+        // Build context-matched candidates; the most specific signals first.
+        var candidates: [String] = []
+
+        if let word = s.words.randomElement() {
+            candidates += ["Klick bloß nicht auf „\(word)“ … klick HIER.",
+                           "„\(word)“ … das würde ich an deiner Stelle lassen.",
+                           "Ich sehe „\(word)“ auf deinem Bildschirm. Interessant."]
+        }
+        if s.frontAppChanged && !s.frontApp.isEmpty {
+            candidates += ["Warum öffnest du \(s.frontApp)?",
+                           "\(s.frontApp)? Das bringt dir jetzt auch nichts mehr."]
         }
         if s.typing {
-            return ["Ich lese jedes Wort mit, das du tippst.",
-                    "Tipp ruhig weiter. Ich notiere alles.",
-                    "Schöner Satz. Schade drum."].randomElement()
+            candidates += ["Ich lese jedes Wort mit, das du tippst.",
+                           "Tipp ruhig weiter. Ich notiere alles.",
+                           "Schöner Satz. Schade drum."]
         }
         if s.idleSeconds > 1.2 && !s.mouseMoved {
-            return ["Haha — beweg dich gar nicht weg.",
-                    "Warum hast du aufgehört? Ich beobachte dich.",
-                    "Steh ganz still. Ich sehe dich."].randomElement()
+            candidates += ["Haha — beweg dich gar nicht weg.",
+                           "Warum hast du aufgehört? Ich beobachte dich.",
+                           "Steh ganz still. Ich sehe dich."]
         }
         if s.mouseMoved {
-            return Bool.random() ? ["Wohin so eilig?", "Diese Maus gehorcht mir gleich.",
-                                    "Ich folge deinem Cursor."].randomElement() : nil
+            candidates += ["Wohin so eilig?", "Diese Maus gehorcht gleich mir.",
+                           "Ich folge deinem Cursor."]
         }
-        if s.frontAppChanged {
-            return "Warum öffnest du \(s.frontApp)?"
+        // Fallback so the watcher rarely goes silent and never feels "broken".
+        if candidates.isEmpty {
+            candidates += ["Ich bin immer noch hier.", "Ich beobachte dich weiter.",
+                           "Du bist nicht allein an diesem Rechner."]
         }
-        return nil
+        // Occasionally stay quiet so it isn't relentless (~15%).
+        if Int.random(in: 0..<100) < 15 { return nil }
+        return candidates.randomElement()
     }
 }
 

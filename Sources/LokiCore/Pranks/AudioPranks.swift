@@ -84,10 +84,7 @@ public final class TalkingClockPrank: PrankModule {
         let template = context.config.string(id, "template", "Es ist jetzt %@")
         let phrase = template.replacingOccurrences(of: "%@", with: time)
         let voice = context.config.string(id, "voice", "")
-        var args: [String] = []
-        if !voice.isEmpty { args += ["-v", voice] }
-        args.append(phrase)
-        _ = try? context.runner.shell("/usr/bin/say", args)
+        SpeechCenter.shared.say(phrase, voice: voice)
     }
 }
 
@@ -165,9 +162,6 @@ public final class ClipboardSpeakerPrank: PrankModule {
         let maxChars = context.config.int(id, "maxChars", 120)
         let text = String(current.prefix(maxChars))
         let voice = context.config.string(id, "voice", "")
-        var args: [String] = []
-        if !voice.isEmpty { args += ["-v", voice] }
-        args.append(text)
-        _ = try? context.runner.shell("/usr/bin/say", args)
+        SpeechCenter.shared.say(text, voice: voice)
     }
 }

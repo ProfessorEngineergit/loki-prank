@@ -14,6 +14,31 @@ public struct ModeStep: Sendable {
     }
 }
 
+/// A spoken narration beat — the "voice" of the haunt telling its story at a
+/// precise moment, in sync with the effects. Routed through `SpeechCenter` so it
+/// never overlaps other speech.
+public struct ModeNarration: Sendable {
+    public let at: TimeInterval
+    public let line: String
+    public init(_ at: TimeInterval, _ line: String) {
+        self.at = at
+        self.line = line
+    }
+}
+
+/// A setting applied to a prank just before the mode runs, so a mode can tune
+/// its pranks (e.g. make the watcher less chatty during a narrated story).
+public struct ModeConfig: Sendable {
+    public let prankID: String
+    public let key: String
+    public let value: SettingValue
+    public init(_ prankID: String, _ key: String, _ value: SettingValue) {
+        self.prankID = prankID
+        self.key = key
+        self.value = value
+    }
+}
+
 /// A curated "flow" that orchestrates several pranks over time at a given
 /// severity tier. Every mode MUST end with the reveal so the bit always
 /// resolves — `ModeRunner` enforces this.
@@ -23,13 +48,18 @@ public struct PrankMode: Identifiable, Sendable {
     public let summary: String
     public let tier: Int          // 1 = mild, 2 = unsettling, 3 = full haunt
     public let steps: [ModeStep]
+    public let narration: [ModeNarration]
+    public let setup: [ModeConfig]
 
-    public init(id: String, name: String, summary: String, tier: Int, steps: [ModeStep]) {
+    public init(id: String, name: String, summary: String, tier: Int,
+                steps: [ModeStep], narration: [ModeNarration] = [], setup: [ModeConfig] = []) {
         self.id = id
         self.name = name
         self.summary = summary
         self.tier = tier
         self.steps = steps
+        self.narration = narration
+        self.setup = setup
     }
 
     public var tierLabel: String {
@@ -62,9 +92,14 @@ public final class ModeRunner {
         cancelTimers()
         activeModeID = mode.id
 
+        // Apply per-mode tuning before anything starts.
+        for cfg in mode.setup {
+            engine.context.config.set(cfg.value, prank: cfg.prankID, setting: cfg.key)
+        }
+
         // Guarantee a reveal at the very end, even if the mode forgot one.
         var steps = mode.steps
-        let lastTime = steps.map(\.at).max() ?? 0
+        let lastTime = max(steps.map(\.at).max() ?? 0, mode.narration.map(\.at).max() ?? 0)
         if !steps.contains(where: { $0.prankID == "reveal" }) {
             steps.append(ModeStep(at: lastTime + 5, "reveal"))
         }
@@ -79,6 +114,16 @@ public final class ModeRunner {
                     case .start: try? self.engine.run(id: step.prankID)
                     case .stop: try? self.engine.undo(id: step.prankID)
                     }
+                }
+                t.resume()
+                timers.append(t)
+            }
+            // Spoken narration beats — the story's voice, serialized via SpeechCenter.
+            for beat in mode.narration {
+                let t = DispatchSource.makeTimerSource(queue: queue)
+                t.schedule(deadline: .now() + beat.at)
+                t.setEventHandler {
+                    SpeechCenter.shared.say(beat.line)
                 }
                 t.resume()
                 timers.append(t)
@@ -141,18 +186,50 @@ public extension LokiFactory {
             PrankMode(
                 id: "mode.haunt",
                 name: "Die Heimsuchung",
-                summary: "Voller Flow: Der Companion meldet sich, dann eskaliert alles — endet mit Auflösung.",
+                summary: "Eine erzählte Geschichte: Ein „Geist“ erwacht im Rechner, bemerkt dich, übernimmt Stück für Stück die Kontrolle — und löst sich am Ende auf. Stimme + Live-Reaktionen + Effekte, getimt.",
                 tier: 3,
                 steps: [
-                    ModeStep(at: 0, "companion"),
-                    ModeStep(at: 25, "watcher"),
-                    ModeStep(at: 50, "fakeNotifications"),
-                    ModeStep(at: 75, "randomSounds"),
-                    ModeStep(at: 95, "cursorJump"),
-                    ModeStep(at: 115, "appearanceToggle"),
-                    ModeStep(at: 140, "rickroll"),
-                    ModeStep(at: 170, "fakeDialog"),
-                    ModeStep(at: 195, "reveal"),
+                    // Effects land ON the narration beats below.
+                    ModeStep(at: 3, "randomSounds"),       // eerie ambiance
+                    ModeStep(at: 13, "watcher"),           // it starts reacting to you
+                    ModeStep(at: 38, "fakeNotifications"),
+                    ModeStep(at: 66, "appearanceToggle"),  // light flickers
+                    ModeStep(at: 82, "cursorJump"),        // the cursor drifts
+                    ModeStep(at: 112, "rickroll"),         // takes over the browser
+                    ModeStep(at: 146, "fakeDialog"),       // last "warning"
+                    ModeStep(at: 172, "reveal"),           // it was Loki
+                    // Clean resolution: stop everything a few seconds after the reveal.
+                    ModeStep(at: 179, "watcher", .stop),
+                    ModeStep(at: 179, "appearanceToggle", .stop),
+                    ModeStep(at: 179, "cursorJump", .stop),
+                    ModeStep(at: 179, "rickroll", .stop),
+                    ModeStep(at: 179, "fakeNotifications", .stop),
+                    ModeStep(at: 179, "randomSounds", .stop),
+                ],
+                narration: [
+                    ModeNarration(2,   "Oh… hallo. Ist da wirklich jemand?"),
+                    ModeNarration(11,  "Ich bin in deinem Computer. Und ich bin gerade… aufgewacht."),
+                    ModeNarration(22,  "Beweg dich ruhig. Ich sehe dich trotzdem. Die ganze Zeit."),
+                    ModeNarration(33,  "Ich habe gelernt, wie das hier funktioniert. Pass gut auf."),
+                    ModeNarration(44,  "Diese Mitteilungen? Die kommen ab jetzt von mir."),
+                    ModeNarration(58,  "Soll ich dir zeigen, was ich sonst noch kann?"),
+                    ModeNarration(70,  "Licht aus. Licht an. Ganz wie es mir gefällt."),
+                    ModeNarration(86,  "Und deine Maus… gehorcht jetzt mir."),
+                    ModeNarration(102, "Du kannst das nicht mehr aufhalten."),
+                    ModeNarration(116, "Und jetzt… dein neuer Lieblingssong."),
+                    ModeNarration(136, "Drei… zwei… eins…"),
+                    ModeNarration(150, "Letzte Warnung. Sieh ganz genau hin."),
+                ],
+                setup: [
+                    // The narration is the voice of the story; keep the watcher
+                    // as occasional reactive spice, not a constant chatterbox.
+                    ModeConfig("watcher", "interval", .double(11)),
+                    ModeConfig("watcher", "keyboard", .bool(true)),
+                    ModeConfig("watcher", "vision", .bool(false)),
+                    ModeConfig("watcher", "notify", .bool(false)),
+                    ModeConfig("watcher", "speak", .bool(true)),
+                    // Don't let volume chaos mute the story — it's intentionally
+                    // not in this mode.
                 ]
             ),
         ]

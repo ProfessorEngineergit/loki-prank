@@ -67,9 +67,6 @@ public final class SayPrank: PrankModule {
         guard let phrase = phrases.randomElement() else { return }
         let voice = context.config.string(id, "voice", "")
         let rate = Int(context.config.double(id, "rate", 180))
-        var args: [String] = ["-r", "\(rate)"]
-        if !voice.isEmpty { args += ["-v", voice] }
-        args.append(phrase)
-        _ = try? context.runner.shell("/usr/bin/say", args)
+        SpeechCenter.shared.say(phrase, voice: voice, rate: rate)
     }
 }

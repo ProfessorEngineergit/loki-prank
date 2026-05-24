@@ -95,6 +95,8 @@ public final class PrankEngine {
     /// errors encountered for surfacing to the operator.
     @discardableResult
     public func panic() -> [Error] {
+        // Silence everything first so the reveal / restore isn't drowned out.
+        SpeechCenter.shared.stopAll()
         var errors: [Error] = []
         for prank in activePranks {
             do {

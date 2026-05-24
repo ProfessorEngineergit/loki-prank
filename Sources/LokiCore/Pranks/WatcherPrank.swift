@@ -42,6 +42,7 @@ public final class WatcherPrank: PrankModule {
     public func undo(context: PrankContext) throws {
         timer.stop()
         awareness.stop()
+        SpeechCenter.shared.stopAll()
     }
 
     private func react(context: PrankContext) {
@@ -52,7 +53,7 @@ public final class WatcherPrank: PrankModule {
                 "display notification \"\(line.appleScriptEscaped)\" with title \"👁\"")
         }
         if context.config.bool(id, "speak", true) {
-            _ = try? context.runner.shell("/usr/bin/say", [line])
+            SpeechCenter.shared.say(line)
         }
     }
 }

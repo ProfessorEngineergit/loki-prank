@@ -53,6 +53,26 @@ final class CatalogTests: XCTestCase {
         }
     }
 
+    func testModeSetupReferencesValidPranks() {
+        let ids = Set(LokiFactory.allPranks().map { $0.id })
+        for mode in LokiFactory.allModes() {
+            for cfg in mode.setup {
+                XCTAssertTrue(ids.contains(cfg.prankID),
+                              "Mode \(mode.id) setup referenziert unbekannten Prank \(cfg.prankID)")
+            }
+        }
+    }
+
+    func testHauntModeIsNarrated() {
+        guard let haunt = LokiFactory.allModes().first(where: { $0.tier == 3 }) else {
+            return XCTFail("Kein Tier-3-Modus gefunden")
+        }
+        XCTAssertGreaterThan(haunt.narration.count, 5, "Heimsuchung sollte eine erzählte Story sein")
+        // Narration beats should be ordered in time.
+        let times = haunt.narration.map(\.at)
+        XCTAssertEqual(times, times.sorted(), "Narration-Beats sind nicht chronologisch")
+    }
+
     func testModesCoverTiersAndEndWithReveal() {
         let modes = LokiFactory.allModes()
         XCTAssertEqual(Set(modes.map { $0.tier }), [1, 2, 3])
