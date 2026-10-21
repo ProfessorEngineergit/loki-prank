@@ -1,8 +1,8 @@
 # Loki
 
-Eine quelloffene macOS-Menüleisten-App mit einer Sammlung **harmloser, vollständig reversibler** Streiche — von Rickrolls beim Surfen bis zu täuschend echten (aber gefälschten) System-Screens. Gesteuert über ein verstecktes Overlay per globalem Hotkey.
+Eine quelloffene macOS-Menüleisten-App mit einer Sammlung **harmloser, vollständig reversibler** Streiche - von Rickrolls beim Surfen bis zu täuschend echten (aber gefälschten) System-Screens. Gesteuert über ein verstecktes Overlay per globalem Hotkey.
 
-> Mac-first (Swift + AppleScript). Der Name „Loki“ ist plattform-neutral gewählt — eine spätere Windows-/Linux-Variante ist als Ziel vorgesehen.
+> Mac-first (Swift + AppleScript). Der Name „Loki“ ist plattform-neutral gewählt - eine spätere Windows-/Linux-Variante ist als Ziel vorgesehen.
 
 ---
 
@@ -10,7 +10,7 @@ Eine quelloffene macOS-Menüleisten-App mit einer Sammlung **harmloser, vollstä
 
 **Setze Loki ausschließlich auf Geräten ein, die dir gehören oder für die du die ausdrückliche Erlaubnis der besitzenden Person hast.**
 
-- Alle Streiche sind **reversibel und nicht-destruktiv** — kein Datenverlust.
+- Alle Streiche sind **reversibel und nicht-destruktiv** - kein Datenverlust.
 - **Kein** Abgreifen von Passwörtern, Daten oder Tastatureingaben. Keine heimliche Persistenz.
 - Die **Panik-Taste `⌃⌥⌘P`** stoppt jederzeit alles und stellt den Originalzustand wieder her.
 - Beim ersten Start musst du diesen Bedingungen aktiv zustimmen.
@@ -44,7 +44,7 @@ xattr -dr com.apple.quarantine build/Loki.app   # oder: Rechtsklick > Öffnen
 
 ## Benutzung
 
-1. `Loki.app` starten — sie erscheint als Masken-Symbol in der Menüleiste.
+1. `Loki.app` starten - sie erscheint als Masken-Symbol in der Menüleiste.
 2. Beim ersten Start dem Einverständnis zustimmen.
 3. Overlay öffnen mit **`⌃⌥⌘L`** (oder Menüleisten-Icon → „Steuerung öffnen“).
 4. Streich an-/ausschalten. Reversible Streiche zeigen einen Stopp-Knopf.
@@ -65,7 +65,7 @@ Beim ersten Auslösen fragt macOS nach Berechtigungen unter *Systemeinstellungen
 ## Modi (orchestrierte Abläufe)
 
 Im Tab **Modi** startest du kuratierte „Flows", die mehrere Streiche zeitlich
-gestaffelt zusammenspielen — und sich am Ende **immer selbst auflösen**:
+gestaffelt zusammenspielen - und sich am Ende **immer selbst auflösen**:
 
 | Modus | Tier | Was passiert |
 |---|---|---|
@@ -81,7 +81,7 @@ einen laufenden Modus jederzeit und setzt alles zurück.
 - **Einwilligungs-Gate** beim ersten Start, danach **transparentes Rechte-Onboarding**.
 - **Auto-Auflösung**: optionaler Timer (in Minuten), nach dem Loki von selbst „Das war Loki" zeigt und alles zurücksetzt.
 - **Panik ⌃⌥⌘P** + reversible, nicht-destruktive Streiche; kein Daten-/Passwort-Abgriff.
-- Der **Companion** spricht (kein Notes) auf Basis einer lokalen Skript-Engine; optional über ein **lokales LLM (Ollama)** und mit **gesprochener Antwort** (on-device Spracherkennung) — alles lokal, nichts wird übertragen. Bleibt im Einwilligungs-/Reveal-Modell, kein verdecktes Manipulieren.
+- Der **Companion** spricht (kein Notes) auf Basis einer lokalen Skript-Engine; optional über ein **lokales LLM (Ollama)** und mit **gesprochener Antwort** (on-device Spracherkennung) - alles lokal, nichts wird übertragen. Bleibt im Einwilligungs-/Reveal-Modell, kein verdecktes Manipulieren.
 
 ## Streich-Katalog (32 Streiche)
 
@@ -89,9 +89,9 @@ Jeder Streich hat eigene Einstellungen (per Schieberegler/Auswahl/Textfeld im
 Overlay) und ist reversibel oder ein harmloser Einmal-Effekt.
 
 **Browser**
-- **Rickroll-Redirect** — leitet zufällige Tabs auf ein Video um (Wahrscheinlichkeit, Intervall, Ziel-URL, Browser).
-- **Tab-Flut** — öffnet immer wieder Tabs mit zufälligen URLs (URLs, Anzahl, Intervall, Browser).
-- **Auto-Neuladen** — lädt den aktiven Tab ständig neu (Intervall, Wahrscheinlichkeit).
+- **Rickroll-Redirect** - leitet zufällige Tabs auf ein Video um (Wahrscheinlichkeit, Intervall, Ziel-URL, Browser).
+- **Tab-Flut** - öffnet immer wieder Tabs mit zufälligen URLs (URLs, Anzahl, Intervall, Browser).
+- **Auto-Neuladen** - lädt den aktiven Tab ständig neu (Intervall, Wahrscheinlichkeit).
 
 **UI / Display**
 - **Desktop-Icons verstecken** · **Bildschirm einfrieren** (Screenshot-als-Hintergrund) · **Hintergrundbild tauschen**
@@ -115,7 +115,7 @@ Overlay) und ist reversibel oder ein harmloser Einmal-Effekt.
 > Hinweis: Einige `defaults`-basierte Streiche (Scroll-Richtung, Tasten-Wiederholung,
 > Maus-Geschwindigkeit, Mauszeiger-Größe) greifen je nach macOS-Version erst nach
 > erneuter An-/Abmeldung. „Fake-Systemdialog" und „Hacker-Terminal" fragen **keine**
-> Eingaben ab — sie tun nichts mit dem, was getippt wird.
+> Eingaben ab - sie tun nichts mit dem, was getippt wird.
 
 ---
 
@@ -135,12 +135,12 @@ scripts/build-app.sh   # wrappt das Binary in Loki.app (LSUIElement, Info.plist)
 **Sicherheits-Kern:** Jeder zustandsändernde Streich sichert den Originalwert im
 `StateStore` (auf Disk persistiert, übersteht Neustarts) und stellt ihn im
 `undo` wieder her. `PanicManager`/Panik-Hotkey ruft `undo` für alle aktiven
-Streiche auf — best-effort, ein Fehler blockiert die anderen nicht.
+Streiche auf - best-effort, ein Fehler blockiert die anderen nicht.
 
 ### Einen Streich hinzufügen
 1. Neue Klasse in `Sources/LokiCore/Pranks/` anlegen, die `PrankModule` erfüllt.
 2. In `DefaultCatalog.swift` (`allPranks()`) registrieren.
-3. Einstellungen deklarativ über `var settings: [PrankSetting]` angeben — die UI
+3. Einstellungen deklarativ über `var settings: [PrankSetting]` angeben - die UI
    baut die Controls automatisch. Werte im Code via `context.config` lesen.
 4. Zustandsänderungen über `context.store.saveOriginal` / `consumeOriginal`
    sichern, damit Panik & Undo funktionieren.
@@ -152,14 +152,14 @@ Streiche auf — best-effort, ein Fehler blockiert die anderen nicht.
 - **Phase 1:** Engine, Safety, Overlay, Starter-Streiche. ✅
 - **Phase 2:** Einstellungs-Framework + Streiche mit Settings-UI & Suche. ✅
 - **Phase 3:** Modi/Tiers + Companion, Auto-Auflösung, Rechte-Onboarding, neugestaltete UI. ✅
-- **Phase 4 (später):** Scheduler (Zufall/Events), Fake-Vollbild-Screens (eigenes Fenster), optionales lokales LLM für den Companion, opt-in Remote-Steuerung — transparent, für die bespaßte Person sicht- und abschaltbar.
+- **Phase 4 (später):** Scheduler (Zufall/Events), Fake-Vollbild-Screens (eigenes Fenster), optionales lokales LLM für den Companion, opt-in Remote-Steuerung - transparent, für die bespaßte Person sicht- und abschaltbar.
 
 ---
 
 ## Lizenz
 
-MIT — siehe [LICENSE](LICENSE).
+MIT - siehe [LICENSE](LICENSE).
 
-## Entwicklung und KI-Beteiligung
+## KI-Beteiligung
 
-Kleines, KI-gestützt entwickeltes Lern- oder Experimentierprojekt. Die Historie des Hauptbranches enthält ausdrücklich Claude zugeschriebene Beiträge ([Beispiel](https://github.com/ProfessorEngineergit/loki-prank/commit/30fcb84c869c2b1886e05b1a895a2b734f9cec52)). Das belegt KI-Beteiligung an diesen Beiträgen, nicht die Herkunft jeder Zeile oder eine unabhängige Prüfung. Bestehende Autor-, Co-Autoren- und Sitzungsangaben bleiben erhalten.
+Einzelne Code-Beiträge sind ausdrücklich KI-Tools zugeschrieben: [generated with Claude Code](https://github.com/ProfessorEngineergit/loki-prank/commit/c94875fd27907a593f24bf91dd2cf2e9315aa2b9). Das gilt für diese Beiträge, nicht pauschal für alle Dateien.
