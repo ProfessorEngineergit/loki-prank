@@ -159,3 +159,7 @@ Streiche auf — best-effort, ein Fehler blockiert die anderen nicht.
 ## Lizenz
 
 MIT — siehe [LICENSE](LICENSE).
+
+## Entwicklung und KI-Beteiligung
+
+Kleines, KI-gestützt entwickeltes Lern- oder Experimentierprojekt. Die Historie des Hauptbranches enthält ausdrücklich Claude zugeschriebene Beiträge ([Beispiel](https://github.com/ProfessorEngineergit/loki-prank/commit/30fcb84c869c2b1886e05b1a895a2b734f9cec52)). Das belegt KI-Beteiligung an diesen Beiträgen, nicht die Herkunft jeder Zeile oder eine unabhängige Prüfung. Bestehende Autor-, Co-Autoren- und Sitzungsangaben bleiben erhalten.
